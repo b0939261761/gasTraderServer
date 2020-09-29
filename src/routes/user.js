@@ -4,8 +4,20 @@ import { apiGetUser } from '../api/user.js';
 
 // -----------------------------------
 
-const getCompany = async (req, res) => res.send(await apiGetUser(res.locals.userId));
+const getUser = async (req, res) => res.send(await apiGetUser(res.locals.userId));
 
 // -----------------------------------
 
-export default express.Router().get('', catchAsyncRoute(getCompany));
+const changePassword = async (req, res) => {
+  const response = res.send(await apiGetUser(res.locals.userId));
+
+  switch (response) {
+    case 0: return res.status(204).send();
+    case 1: return res.status('400').send('WRONG_PASSWORD');
+    default: return res.status('400').send('NOT_STATUS');
+  }
+};
+
+export default express.Router()
+  .get('', catchAsyncRoute(getUser))
+  .post('change-password', catchAsyncRoute(changePassword));

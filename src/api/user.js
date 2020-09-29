@@ -16,6 +16,18 @@ export const apiGetUser = async userId => {
   };
 };
 
+export const apiUserChangePassword = async data => {
+  const params = {
+    old_password: data.password,
+    new_password: data.newPassword,
+    client_code: data.userId
+  };
+
+  const response = await http.post('change_password', params);
+  return +response.data.result;
+};
+
 export default {
-  apiGetUser
+  apiGetUser,
+  apiUserChangePassword
 };
