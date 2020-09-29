@@ -1,18 +1,21 @@
-const fastify = require('fastify')({ logger: true })
+import express from 'express';
+import cors from 'cors';
+import routes from './src/routes/index.js';
 
-
+const server = express();
 const port = process.env.SERVER_PORT;
 
-// Declare a route
-fastify.get('/', (request, reply) => {
-  reply.send({ hello: process.env.NODE_ENV })
-})
+const corsOptions = {
+  origin: '*',
+  exposedHeaders: [
+    'Access-Token',
+    'Refresh-Token'
+  ]
+};
 
-// Run the server!
-fastify.listen(port, (err) => {
-  if (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
-  fastify.log.info(`server listening on ${fastify.server.address().port}`)
-})
+server.use(cors(corsOptions));
+server.use(express.json());
+
+server.use('/', routes);
+server.use((err, req, res, next) => console.error(err) || res.status(422).send(err.message));
+server.listen(port, () => console.info(`💡 App listening on port ${port}!`));
